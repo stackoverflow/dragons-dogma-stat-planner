@@ -7,12 +7,13 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <script src="js/planner.js"></script>
+  <script src="js/build.js"></script>
   <script src="js/gui.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="page-header">
-      <h1>Dragon's Dogma: Dark Arisen Stat Planner</h1>
+      <h1>Dragon's Dogma: Dark Arisen <small>Stat Planner</small></h1>
     </div>
 
     <div class="panel panel-default">
@@ -47,6 +48,18 @@
               </tr>
             </table>
           </div>
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-md-12">
+                <button type="button" class="btn btn-primary" id="copy-btn">Copy build to clipboard</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <button type="button" class="btn btn-default" id="reset-btn">Reset build</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -58,11 +71,11 @@
             <label for="init-vocation" class="col-sm-2 control-label">Initial class</label>
             <div class="col-sm-10">
               <div class="btn-group">
-                <button type="button" class="btn btn-default" id="fighter-btn"
+                <button type="button" class="btn btn-primary" id="fighter-btn"
                         data-toggle="popover" data-placement="bottom" title="Initial Stats">Fighter</button>
-                <button type="button" class="btn btn-default" id="strider-btn"
+                <button type="button" class="btn btn-primary" id="strider-btn"
                         data-toggle="tooltip" data-placement="bottom" title="Initial Stats">Strider</button>
-                <button type="button" class="btn btn-default" id="mage-btn"
+                <button type="button" class="btn btn-primary" id="mage-btn"
                         data-toggle="tooltip" data-placement="bottom" title="Initial Stats">Mage</button>
               </div>
             </div>

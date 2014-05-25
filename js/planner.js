@@ -1,5 +1,7 @@
 var planner = {};
 
+var vocs = ['fighter', 'strider', 'mage', 'warrior', 'ranger', 'sorcerer', 'mknight', 'assassin', 'marcher'];
+
 planner.fighter = {
   init_hp: 450,
   init_st: 540,

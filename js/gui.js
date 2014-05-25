@@ -8,9 +8,16 @@ var character = {
   mdefense: 0
 };
 
-var vocs = ['fighter', 'strider', 'mage', 'warrior', 'ranger', 'sorcerer', 'mknight', 'assassin', 'marcher'];
-
 var initChoosen = false;
+
+var copyToClipboard = function(text) {
+  window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+}
+
+var activateButton = function(which) {
+  $('#fighter-btn, #strider-btn, #mage-btn').removeClass('active');
+  $(which).addClass('active');
+};
 
 var initBuilder = function(v) {
   return 'HP: ' + v.init_hp + '<br/>ST: ' + v.init_st + '<br/>Attack: ' +
@@ -26,6 +33,18 @@ var setChar = function(char) {
   $('#defense').text(char.defense);
   $('#mattack').text(char.mattack);
   $('#mdefense').text(char.mdefense);
+};
+
+var resetBuild = function() {
+  character = {level: 0, hp: 0, st: 0, attack: 0, defense: 0, mattack: 0, mdefense: 0};
+  initChoosen = false;
+  $('#fighter-btn, #strider-btn, #mage-btn').removeClass('active');
+  _.each(vocs, function(v) {
+    $('#' + v + '-pre-100').val('');
+    $('#' + v + '-pos-100').val('');
+  });
+  setChar(character);
+  setUrl();
 };
 
 var onInit = function(vocation) {
@@ -83,12 +102,12 @@ var readLevels = function() {
   _.each(vocs, function(v) {
     var lv = parseInt($('#' + v + '-pre-100').val(), 10) || 0;
     lv = verifyPre100(totalPre100, lv, v);
-    totalPre100 = totalPre100 + lv;
+    totalPre100 += lv;
     char = onLevel(char, v, 'to100', lv);
 
     lv = parseInt($('#' + v + '-pos-100').val(), 10) || 0;
     lv = verifyPos100(totalPos100, lv, v);
-    totalPos100 = totalPos100 + lv;
+    totalPos100 += lv;
     char = onLevel(char, v, 'to200', lv);
   });
 };
@@ -110,17 +129,33 @@ $(function() {
 
   $('#fighter-btn').click(function(e) {
     e.preventDefault();
+    activateButton('#fighter-btn');
     onInit('fighter');
+    setUrl();
   });
 
   $('#strider-btn').click(function(e) {
     e.preventDefault();
+    activateButton('#strider-btn');
     onInit('strider');
+    setUrl();
   });
 
   $('#mage-btn').click(function(e) {
     e.preventDefault();
+    activateButton('#mage-btn');
     onInit('mage');
+    setUrl();
+  });
+
+  $('#copy-btn').click(function(e) {
+    e.preventDefault();
+    copyToClipboard(location.href);
+  });
+
+  $('#reset-btn').click(function(e) {
+    e.preventDefault();
+    resetBuild();
   });
 
   _.each(vocs, function(v) {
@@ -129,6 +164,7 @@ $(function() {
         var lv = filterPre100($('#' + v + '-pre-100').val());
         $('#' + v + '-pre-100').val(lv);
         readLevels();
+        setUrl();
       } else {
         $('#' + v + '-pre-100').val('');
       }
@@ -141,9 +177,11 @@ $(function() {
         var lv = filterPos100($('#' + v + '-pos-100').val());
         $('#' + v + '-pos-100').val(lv);
         readLevels();
+        setUrl();
       } else {
         $('#' + v + '-pos-100').val('');
       }
     });
   });
+  readUrl();
 });
