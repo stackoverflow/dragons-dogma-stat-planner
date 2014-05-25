@@ -123,6 +123,7 @@ var filterPos100 = function(i) {
 };
 
 $(function() {
+  var readTime = true;
   $('#fighter-btn').popover({trigger: 'hover', html: true, content: initBuilder(planner.fighter)});
   $('#strider-btn').popover({trigger: 'hover', html: true, content: initBuilder(planner.strider)});
   $('#mage-btn').popover({trigger: 'hover', html: true, content: initBuilder(planner.mage)});
@@ -131,21 +132,21 @@ $(function() {
     e.preventDefault();
     activateButton('#fighter-btn');
     onInit('fighter');
-    setUrl();
+    if(!readTime) setUrl();
   });
 
   $('#strider-btn').click(function(e) {
     e.preventDefault();
     activateButton('#strider-btn');
     onInit('strider');
-    setUrl();
+    if(!readTime) setUrl();
   });
 
   $('#mage-btn').click(function(e) {
     e.preventDefault();
     activateButton('#mage-btn');
     onInit('mage');
-    setUrl();
+    if(!readTime) setUrl();
   });
 
   $('#copy-btn').click(function(e) {
@@ -164,7 +165,6 @@ $(function() {
         var lv = filterPre100($('#' + v + '-pre-100').val());
         $('#' + v + '-pre-100').val(lv);
         readLevels();
-        setUrl();
       } else {
         $('#' + v + '-pre-100').val('');
       }
@@ -177,11 +177,22 @@ $(function() {
         var lv = filterPos100($('#' + v + '-pos-100').val());
         $('#' + v + '-pos-100').val(lv);
         readLevels();
-        setUrl();
       } else {
         $('#' + v + '-pos-100').val('');
       }
     });
   });
-  readUrl();
+
+  _.each(vocs, function(v) {
+    $('#' + v + '-pre-100').blur(function() {
+      setUrl();
+    });
+    $('#' + v + '-pos-100').blur(function() {
+      setUrl();
+    });
+  });
+
+  var res = readUrl();
+  if(res) readLevels();
+  readTime = false;
 });

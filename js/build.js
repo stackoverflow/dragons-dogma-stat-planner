@@ -63,7 +63,7 @@ var readUrl = function() {
     n = from(val, 9);
     $('#ranger-pre-100').val(n);
     n = from(val, 11);
-    $('#aorcerer-pre-100').val(n);
+    $('#sorcerer-pre-100').val(n);
     n = from(val, 13);
     $('#mknight-pre-100').val(n);
     n = from(val, 15);
@@ -82,12 +82,13 @@ var readUrl = function() {
     n = from(val, 27);
     $('#ranger-pos-100').val(n);
     n = from(val, 29);
-    $('#aorcerer-pos-100').val(n);
+    $('#sorcerer-pos-100').val(n);
     n = from(val, 31);
     $('#mknight-pos-100').val(n);
     n = from(val, 33);
     $('#assassin-pos-100').val(n);
     n = from(val, 35);
     $('#marcher-pos-100').val(n);
-  }
+    return true;
+  } else return false;
 };
