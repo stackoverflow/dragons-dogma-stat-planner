@@ -36,6 +36,7 @@ var incField = function(field) {
   var v = parseInt($(field).val(), 10) || 0;
   $(field).val(v + 1);
   readLevels();
+  setUrl();
 };
 
 var decField = function(field) {
@@ -43,6 +44,7 @@ var decField = function(field) {
   if(v > 0) {
     $(field).val(v - 1);
     readLevels();
+    setUrl();
   }
 };
 
