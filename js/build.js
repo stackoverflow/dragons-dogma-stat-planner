@@ -8,7 +8,7 @@ var readInput = function(name) {
 };
 
 var readVals = function() {
-  var url = '';
+  var url = planner.vanilla ? 'v' : 'a';
   var isFighter = $('#fighter-btn').hasClass('active');
   var isStrider = $('#strider-btn').hasClass('active');
   var isMage = $('#mage-btn').hasClass('active');
@@ -47,6 +47,12 @@ var readUrl = function() {
   var from = function(v, s) {return parseInt(v.substring(s, s + 2), 16);};
   if(val) {
     val = val[0].substring(1);
+    var vanilla = val[0] === 'v';
+    if(vanilla) {
+      planner.toggleVanilla();
+    }
+
+    val = val.substring(1);
     var start = val[0];
     if(start === 'f') $('#fighter-btn').click();
     if(start === 's') $('#strider-btn').click();

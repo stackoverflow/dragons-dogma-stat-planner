@@ -48,6 +48,22 @@ var decField = function(field) {
   }
 };
 
+var setTitle = function() {
+  var text =  planner.vanilla ? "Dragon's Dogma " : "Dragon's Dogma: Dark Arisen ";
+  $('#DDversion').html(text + "<small>Stat Planner</small>");
+};
+
+var toggleVersion = function() {
+  planner.toggleVanilla();
+  setTitle();
+  $('#badge-marcher-pos-100').popover('destroy');
+  $('#badge-marcher-pos-100').popover({trigger: 'hover', html: true, content: popoverBuilder(planner.marcher, 'to200')});
+  if (initChoosen) {
+      readLevels();   // rebuild
+      setUrl();
+  }
+};
+
 var setChar = function(char) {
   $('#level').text(char.level);
   $('#hp').text(char.hp);
@@ -187,6 +203,11 @@ $(function() {
     resetBuild();
   });
 
+  $('#toggle-btn').click(function(e) {
+    e.preventDefault();
+    toggleVersion();
+  });
+
   _.each(vocs, function(v) {
     $('#' + v + '-pre-100').keyup(function(e) {
       if(initChoosen) {
@@ -236,5 +257,6 @@ $(function() {
 
   var res = readUrl();
   if(res) readLevels();
+  setTitle();
   readTime = false;
 });
