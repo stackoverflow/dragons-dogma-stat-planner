@@ -9,6 +9,7 @@ var character = {
 };
 
 var initChoosen = false;
+var sliderDown = false;
 
 var copyToClipboard = function(text) {
   window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
@@ -23,6 +24,26 @@ var initBuilder = function(v) {
   return 'HP: ' + v.init_hp + '<br/>ST: ' + v.init_st + '<br/>Attack: ' +
     v.init_attack + '<br/>Defense: ' + v.init_defense + '<br/>M. Attack: ' +
     v.init_mattack + '<br/>M.&nbsp;Defense:&nbsp;' + v.init_mdefense;
+};
+
+var popoverBuilder = function(v, to) {
+  return 'HP: ' + v[to].hp + '<br/>ST: ' + v[to].st + '<br/>Attack: ' +
+    v[to].attack + '<br/>Defense: ' + v[to].defense + '<br/>M. Attack: ' +
+    v[to].mattack + '<br/>M.&nbsp;Defense:&nbsp;' + v[to].mdefense;
+};
+
+var incField = function(field) {
+  var v = parseInt($(field).val(), 10) || 0;
+  $(field).val(v + 1);
+  readLevels();
+};
+
+var decField = function(field) {
+  var v = parseInt($(field).val(), 10) || 0;
+  if(v > 0) {
+    $(field).val(v - 1);
+    readLevels();
+  }
 };
 
 var setChar = function(char) {
@@ -128,6 +149,11 @@ $(function() {
   $('#strider-btn').popover({trigger: 'hover', html: true, content: initBuilder(planner.strider)});
   $('#mage-btn').popover({trigger: 'hover', html: true, content: initBuilder(planner.mage)});
 
+  _.each(vocs, function(v) {
+    $('#badge-' + v + '-pre-100').popover({trigger: 'hover', html: true, content: popoverBuilder(planner[v], 'to100')});
+    $('#badge-' + v + '-pos-100').popover({trigger: 'hover', html: true, content: popoverBuilder(planner[v], 'to200')});
+  });
+
   $('#fighter-btn').click(function(e) {
     e.preventDefault();
     activateButton('#fighter-btn');
@@ -189,6 +215,20 @@ $(function() {
     });
     $('#' + v + '-pos-100').blur(function() {
       setUrl();
+    });
+
+    $('#' + v + '-pre-100-up, #' + v + '-pre-100-down, #' + v + '-pos-100-up, #' + v + '-pos-100-down').mousedown(function() {
+      var id = $(this).prop('id');
+      var fun = /-up/.exec(id) ? incField : decField;
+      var field = '#' + v + '-' + (/pre-/.exec(id) ? 'pre' : 'pos') + '-100';
+      fun(field);
+      sliderDown = setInterval(function() {
+        fun(field);
+      }, 150);
+    }).mouseup(function() {
+      clearInterval(sliderDown);
+    }).mouseout(function() {
+      clearInterval(sliderDown);
     });
   });
 
