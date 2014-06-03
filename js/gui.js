@@ -91,10 +91,7 @@ var onInit = function(vocation) {
   character = planner.levelUp(character, vocation, 'to10', 9);
   setChar(character);
   initChoosen = true;
-  _.each(vocs, function(v) {
-    $('#' + v + '-pre-100').val('');
-    $('#' + v + '-pos-100').val('');
-  });
+  readLevels();
 };
 
 var onLevel = function(char, vocation, to, levels) {
