@@ -268,6 +268,9 @@ $(function() {
   });
 
   _.each(vocs, function(v) {
+    $('#' + v + '-pre-10').blur(function() {
+      setUrl();
+    });
     $('#' + v + '-pre-100').blur(function() {
       setUrl();
     });
