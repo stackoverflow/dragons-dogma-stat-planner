@@ -79,6 +79,7 @@ var resetBuild = function() {
   initChoosen = false;
   $('#fighter-btn, #strider-btn, #mage-btn').removeClass('active');
   _.each(vocs, function(v) {
+    $('#' + v + '-pre-10').val('');
     $('#' + v + '-pre-100').val('');
     $('#' + v + '-pos-100').val('');
   });
@@ -88,7 +89,7 @@ var resetBuild = function() {
 
 var onInit = function(vocation) {
   character = planner.init(vocation);
-  character = planner.levelUp(character, vocation, 'to10', 9);
+  character = planner.levelUp(character, vocation, 'to10', 0);
   setChar(character);
   initChoosen = true;
   readLevels();
@@ -103,6 +104,15 @@ var onLevel = function(char, vocation, to, levels) {
   }
   setChar(nchar);
   return nchar;
+};
+
+var verifyPre10 = function(current, lv, voc) {
+  var total = current + lv;
+  if(total > 9) {
+    $('#' + voc + '-pre-10').val(9 - current);
+    return 9 - current;
+  }
+  return lv;
 };
 
 var verifyPre100 = function(current, lv, voc) {
@@ -133,9 +143,17 @@ var readLevels = function() {
     mattack: character.mattack,
     mdefense: character.mdefense
   };
+  var totalPre10 = 0;
   var totalPre100 = 0;
   var totalPos100 = 0;
   _.each(vocs, function(v) {
+	if(v === 'fighter' || v === 'strider' || v === 'mage') {
+		var lv = parseInt($('#' + v + '-pre-10').val(), 10) || 0;
+		lv = verifyPre10(totalPre10, lv, v);
+		totalPre10 += lv;
+		char = onLevel(char, v, 'to10', lv);
+	}
+
     var lv = parseInt($('#' + v + '-pre-100').val(), 10) || 0;
     lv = verifyPre100(totalPre100, lv, v);
     totalPre100 += lv;
@@ -146,6 +164,11 @@ var readLevels = function() {
     totalPos100 += lv;
     char = onLevel(char, v, 'to200', lv);
   });
+};
+
+var filterPre10 = function(i) {
+  var v = parseInt(i, 10) || 0;
+  return Math.min(v, 9);
 };
 
 var filterPre100 = function(i) {
@@ -165,6 +188,9 @@ $(function() {
   $('#mage-btn').popover({trigger: 'hover', html: true, content: initBuilder(planner.mage)});
 
   _.each(vocs, function(v) {
+	if(v === 'fighter' || v === 'strider' || v === 'mage') {
+		$('#badge-' + v + '-pre-10').popover({trigger: 'hover', html: true, content: popoverBuilder(planner[v], 'to10')});
+	}
     $('#badge-' + v + '-pre-100').popover({trigger: 'hover', html: true, content: popoverBuilder(planner[v], 'to100')});
     $('#badge-' + v + '-pos-100').popover({trigger: 'hover', html: true, content: popoverBuilder(planner[v], 'to200')});
   });
@@ -206,6 +232,18 @@ $(function() {
   });
 
   _.each(vocs, function(v) {
+    $('#' + v + '-pre-10').keyup(function(e) {
+      if(initChoosen) {
+        var lv = filterPre10($('#' + v + '-pre-10').val());
+        $('#' + v + '-pre-10').val(lv);
+        readLevels();
+      } else {
+        $('#' + v + '-pre-10').val('');
+      }
+    });
+  });
+
+  _.each(vocs, function(v) {
     $('#' + v + '-pre-100').keyup(function(e) {
       if(initChoosen) {
         var lv = filterPre100($('#' + v + '-pre-100').val());
@@ -237,10 +275,16 @@ $(function() {
       setUrl();
     });
 
-    $('#' + v + '-pre-100-up, #' + v + '-pre-100-down, #' + v + '-pos-100-up, #' + v + '-pos-100-down').mousedown(function() {
+    $('#' + v + '-pre-10-up, #' + v + '-pre-10-down, #' + v + '-pre-100-up, #' + v + '-pre-100-down, #' + v + '-pos-100-up, #' + v + '-pos-100-down').mousedown(function() {
       var id = $(this).prop('id');
       var fun = /-up/.exec(id) ? incField : decField;
-      var field = '#' + v + '-' + (/pre-/.exec(id) ? 'pre' : 'pos') + '-100';
+	  
+	  if(/pre-10-/.exec(id)) {
+		var field = '#' + v + '-pre-10';
+	  } else {
+		var field = '#' + v + '-' + (/pre-/.exec(id) ? 'pre' : 'pos') + '-100';
+	  }
+	  
       fun(field);
       sliderDown = setInterval(function() {
         fun(field);
